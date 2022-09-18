@@ -224,6 +224,8 @@ static inline const char* cheri_cause_str(CheriCapExcCause cause) {
     case CapEx_PermitCCallViolation: return "Permit_CCall Violation";
     case CapEx_PermitUnsealViolation: return "Permit_Unseal Violation";
     case CapEx_PermitSetCIDViolation: return "Permit_SetCID Violation";
+    case CapEx_UninitViolation: return "Uninit Violation";
+    case CapEx_UninitLoadViolation: return "Uninit_Load Violation";
     }
     // default: return "Unknown cause";
     __builtin_unreachable();

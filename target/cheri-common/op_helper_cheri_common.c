@@ -93,6 +93,18 @@ static inline bool is_cap_sealed(const cap_register_t *cp)
     return !cap_is_unsealed(cp);
 }
 
+static inline bool cap_is_uninit(CPUArchState *env, uint32_t cs)
+{
+	return get_capreg_tag(env, cs) && (get_capreg_hwperms(env, cs) & CAP_PERM_UNINIT);
+}
+
+static inline bool check_uninit(CPUArchState *env, uint32_t cs, target_ulong rt)
+{
+	const cap_register_t *csp = get_readonly_capreg(env, cs);
+	target_ulong cursor = cap_get_cursor(csp);
+	return cap_is_uninit(env, cs) && (rt < cursor);
+}
+
 // Try set cursor without changing bounds or modifying a sealed type
 // On some architectures this will be an exception, on others it will be allowed
 // but untag the result
@@ -225,6 +237,13 @@ void CHERI_HELPER_IMPL(cheri_invalidate_tags_condition(
 /// Implementations of individual instructions start here
 
 /// Two operand inspection instructions:
+target_ulong CHERI_HELPER_IMPL(cgetuninit(CPUArchState *env, uint32_t cb))
+{
+	/*
+	* CGetUninit: Move Uninit permission bit to a General-Purpose Register
+	*/
+	return (target_ulong)cap_is_uninit(env, cb);
+}
 
 target_ulong CHERI_HELPER_IMPL(cgetaddr(CPUArchState *env, uint32_t cb))
 {
@@ -825,14 +844,18 @@ DEFINE_CHERI_STAT(cfromptr);
 
 static inline QEMU_ALWAYS_INLINE void
 cincoffset_impl(CPUArchState *env, uint32_t cd, uint32_t cb, target_ulong rt,
-                uintptr_t retpc, struct oob_stats_info *oob_info)
+		uintptr_t retpc, struct oob_stats_info *oob_info)
 {
-    const cap_register_t *cbp = get_readonly_capreg(env, cb);
-    /*
-     * CIncOffset: Increase Offset
-     */
-    target_ulong new_addr = cap_get_cursor(cbp) + rt;
-    try_set_cap_cursor(env, cbp, cb, cd, new_addr, retpc, oob_info);
+	const cap_register_t *cbp = get_readonly_capreg(env, cb);
+	/*
+	* CIncOffset: Increase Offset
+	*/
+	target_ulong new_addr = cap_get_cursor(cbp) + rt;
+	if (check_uninit(env, cd, new_addr)) {
+		raise_cheri_exception(env, CapEx_UninitViolation, cd);
+	} else {
+		try_set_cap_cursor(env, cbp, cb, cd, new_addr, retpc, oob_info);
+	}
 }
 
 void CHERI_HELPER_IMPL(candperm(CPUArchState *env, uint32_t cd, uint32_t cb,

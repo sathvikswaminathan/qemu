@@ -163,7 +163,7 @@ TRANSLATE_INT_CAP(cgetperm)
 TRANSLATE_INT_CAP(cgettag)
 TRANSLATE_INT_CAP(cgettype)
 TRANSLATE_INT_CAP(cgetsealed)
-
+TRANSLATE_INT_CAP(cgetuninit)
 TRANSLATE_INT_CAP(cloadtags)
 
 // Two operand (int int)
