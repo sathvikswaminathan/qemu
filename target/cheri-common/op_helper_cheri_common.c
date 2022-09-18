@@ -847,6 +847,7 @@ cincoffset_impl(CPUArchState *env, uint32_t cd, uint32_t cb, target_ulong rt,
 		uintptr_t retpc, struct oob_stats_info *oob_info)
 {
 	const cap_register_t *cbp = get_readonly_capreg(env, cb);
+	GET_HOST_RETPC();
 	/*
 	* CIncOffset: Increase Offset
 	*/
