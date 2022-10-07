@@ -1,4 +1,4 @@
-/*-
+/*
  * SPDX-License-Identifier: BSD-2-Clause
  *
  * Copyright (c) 2015-2016 Stacey Son <sson@FreeBSD.org>
@@ -1173,6 +1173,8 @@ target_ulong CHERI_HELPER_IMPL(cap_load_check(CPUArchState *env, uint32_t cb,
                                               target_ulong offset,
                                               uint32_t size))
 {
+    GET_HOST_RETPC();
+
     if(offset < 0) {
 	raise_cheri_exception(env, CapEx_UninitViolation, cb);
     }
