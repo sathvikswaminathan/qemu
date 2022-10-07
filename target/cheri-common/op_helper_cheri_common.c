@@ -1176,7 +1176,7 @@ target_ulong CHERI_HELPER_IMPL(cap_load_check(CPUArchState *env, uint32_t cb,
     GET_HOST_RETPC();
 
     if(offset < 0) {
-	raise_cheri_exception(env, CapEx_UninitViolation, cb);
+	raise_cheri_exception(env, CapEx_UninitLoadViolation, cb);
     }
 
     return cap_check_common(CAP_PERM_LOAD, env, cb, offset, size, GETPC());
