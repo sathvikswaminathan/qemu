@@ -266,7 +266,6 @@ void CHERI_HELPER_IMPL(cuninit(CPUArchState *env, uint32_t cb, uint32_t cd))
         CAP_cc(update_perms)(&result, cd_perms);
         update_capreg(env, cd, &result);
     }
-    return (target_ulong)cap_is_uninit(env, cb);
 }
 
 
