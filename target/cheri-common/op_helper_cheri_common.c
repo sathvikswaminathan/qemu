@@ -245,6 +245,31 @@ target_ulong CHERI_HELPER_IMPL(cgetuninit(CPUArchState *env, uint32_t cb))
 	return (target_ulong)cap_is_uninit(env, cb);
 }
 
+void CHERI_HELPER_IMPL(cuninit(CPUArchState *env, uint32_t cb, uint32_t cd))
+{
+    /*
+     * CUninit: Set the uninit bit to 1
+     */
+
+    GET_HOST_RETPC();
+
+    const cap_register_t *cbp = get_readonly_capreg(env, cb)
+
+    if (!cbp->cr_tag) {
+        raise_cheri_exception(env, CapEx_TagViolation, cb);
+    } else if (cap_is_unsealed(cp)) {
+        raise_cheri_exception(env, CapEx_PermitSealViolation, cb);
+    } else {
+        uint32_t cb_perms = cap_get_perms(cbp);
+        uint32_t cd_perms = cb_perms | CAP_PERM_UNINIT;
+        cap_register_t result = *cbp;
+        CAP_cc(update_perms)(&result, cd_perms);
+        update_capreg(env, cd, &result);
+    }
+    return (target_ulong)cap_is_uninit(env, cb);
+}
+
+
 target_ulong CHERI_HELPER_IMPL(cgetaddr(CPUArchState *env, uint32_t cb))
 {
     /*
