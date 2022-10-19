@@ -257,7 +257,7 @@ void CHERI_HELPER_IMPL(cuninit(CPUArchState *env, uint32_t cb, uint32_t cd))
 
     if (!cbp->cr_tag) {
         raise_cheri_exception(env, CapEx_TagViolation, cb);
-    } else if (cap_is_unsealed(cp)) {
+    } else if (cap_is_unsealed(cbp)) {
         raise_cheri_exception(env, CapEx_PermitSealViolation, cb);
     } else {
         uint32_t cb_perms = cap_get_perms(cbp);
