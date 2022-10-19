@@ -253,7 +253,7 @@ void CHERI_HELPER_IMPL(cuninit(CPUArchState *env, uint32_t cb, uint32_t cd))
 
     GET_HOST_RETPC();
 
-    const cap_register_t *cbp = get_readonly_capreg(env, cb)
+    const cap_register_t *cbp = get_readonly_capreg(env, cb);
 
     if (!cbp->cr_tag) {
         raise_cheri_exception(env, CapEx_TagViolation, cb);
