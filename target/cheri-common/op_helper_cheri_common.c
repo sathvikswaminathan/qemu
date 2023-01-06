@@ -1260,6 +1260,13 @@ target_ulong CHERI_HELPER_IMPL(cap_load_check(CPUArchState *env, uint32_t cb,
 target_ulong CHERI_HELPER_IMPL(cap_store_check(CPUArchState *env, uint32_t cb,
                                             target_ulong offset, uint32_t size))
 {
+    if(offset == -1){
+        /* uninitialized capability */
+        const cap_register_t *cbp = get_readonly_capreg(env, cb);
+        target_ulong old_cursor = cap_get_cursor(cbp);
+        target_ulong new_cursor = old_cursor - size;
+        try_set_cap_cursor(env, cbp, cb, cd, new_cursor, retpc, oob_info);	
+    }
     return cap_check_common(CAP_PERM_STORE, env, cb, offset, size, GETPC());
 }
 

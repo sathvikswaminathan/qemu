@@ -54,6 +54,12 @@ sc_d_cap    1111100  ..... ..... 000 11011 1011011 @atom_st_cap_or_ddc  # RV64-o
 sc_c_ddc    1111100  ..... ..... 000 10100 1011011 @atom_st_cap_or_ddc  # RV64-only (would be sc_q_ddc for RV128)
 sc_c_cap    1111100  ..... ..... 000 11100 1011011 @atom_st_cap_or_ddc  # RV64-only (would be sc_q_cap for RV128)
 
+ust_b_cap   1110111  ..... ..... 000 ..... 1011011 @r_2source
+ust_h_cap   1111000  ..... ..... 000 ..... 1011011 @r_2source
+ust_w_cap   1111001  ..... ..... 000 ..... 1011011 @r_2source
+ust_d_cap   1111010  ..... ..... 000 ..... 1011011 @r_2source  
+ust_c_cap   1111011  ..... ..... 000 ..... 1011011 @r_2source 
+
 lc       ............   ..... 010 ..... 0001111 @i  # def LC_128  : RVInstI<0x2, OPC_MISC_MEM (0b0001111)
 sc       ....... .....  ..... 100 ..... 0100011 @s  # def SC_128  : RVInstS<0x4, OPC_STORE (0b0100011)
 
@@ -62,4 +68,4 @@ sc_c        00011 . . ..... ..... 100 ..... 0101111 @atom_st
 amoswap_c   00001 . . ..... ..... 100 ..... 0101111 @atom_st
 
 cshrink 	  0100010 ..... ..... 000 ..... 1011011 @r2
-chshrinkimm   ............ ..... 011 ..... 1011011 @r2
+cshrinkimm    ............ ..... 011 ..... 1011011 @r2
