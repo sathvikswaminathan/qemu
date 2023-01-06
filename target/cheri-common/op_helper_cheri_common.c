@@ -105,6 +105,28 @@ static inline bool check_uninit(CPUArchState *env, uint32_t cs, target_ulong rt)
 	return cap_is_uninit(env, cs) && (rt < cursor);
 }
 
+static inline void handle_shrink_cap(CPUArchState *env, uint32_t cd, uint32_t cb, target_ulong new_base)
+{
+        const cap_register_t *cbp = get_readonly_capreg(env, cb);
+        target_ulong old_top = (target_ulong)cap_get_top(cbp);
+        target_ulong old_base = (target_ulong)cap_get_base(cbp);
+        target_ulong new_top = cap_get_cursor(cbp);
+        if (!cbp->cr_tag) {
+            raise_cheri_exception(env, CapEx_TagViolation, cb);
+        }  
+        if (!cap_is_unsealed(cbp)) {
+            raise_cheri_exception(env, CapEx_SealViolation, cb);
+        } 
+        if(new_base < old_base){
+            raise_cheri_exception(env, CapEx_LengthViolation, cb);
+        }
+        if(new_top > old_top){
+            raise_cheri_exception(env, CapEx_LengthViolation, cb);
+        }
+        CAP_cc(setbounds)(&result, new_base, new_top);
+        update_capreg(env, cd, &result);
+}
+
 // Try set cursor without changing bounds or modifying a sealed type
 // On some architectures this will be an exception, on others it will be allowed
 // but untag the result
@@ -864,6 +886,32 @@ DEFINE_CHERI_STAT(csetoffset);
 DEFINE_CHERI_STAT(csetaddr);
 DEFINE_CHERI_STAT(candaddr);
 DEFINE_CHERI_STAT(cfromptr);
+#endif
+
+#ifdef TARGET_RISCV64
+void CHERI_HELPER_IMPL(cshrink(CPUArchState *env, uint32_t cd, uint32_t cb,
+                                target_ulong rt))
+{
+    const cap_register_t *cbp = get_readonly_capreg(env, cb);
+    GET_HOST_RETPC();
+    /*
+     * CShrink: Shrink Range
+     */
+        target_ulong new_base = rt;
+        handle_shrink_cap(env, cd, cb, new_base);
+}
+
+void CHERI_HELPER_IMPL(cshrinkimm(CPUArchState *env, uint32_t cd, uint32_t cb, target_ulong imm))
+{
+    const cap_register_t *cbp = get_readonly_capreg(env, cb);
+    GET_HOST_RETPC();
+    /*
+     * CShrinkImm: Shrink Range
+     */
+        target_ulong cursor = cap_get_cursor(cbp);
+        target_ulong new_base = cursor + imm;
+        handle_shrink_cap(env, cd, cb, new_base);
+}
 #endif
 
 static inline QEMU_ALWAYS_INLINE void

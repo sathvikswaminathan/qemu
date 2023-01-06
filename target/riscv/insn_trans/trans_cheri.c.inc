@@ -215,6 +215,8 @@ TRANSLATE_CAP_CAP_INT(csetbounds)
 TRANSLATE_CAP_CAP_INT(csetboundsexact)
 TRANSLATE_CAP_CAP_INT(csetflags)
 TRANSLATE_CAP_CAP_INT(csetoffset)
+TRANSLATE_CAP_CAP_INT(cshrink)
+TRANSLATE_CAP_CAP_INT(cshrinkimm)	
 
 // Three operand (int cap cap)
 TRANSLATE_INT_CAP_CAP(csub)
