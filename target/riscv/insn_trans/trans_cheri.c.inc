@@ -216,7 +216,7 @@ TRANSLATE_CAP_CAP_INT(csetboundsexact)
 TRANSLATE_CAP_CAP_INT(csetflags)
 TRANSLATE_CAP_CAP_INT(csetoffset)
 TRANSLATE_CAP_CAP_INT(cshrink)
-TRANSLATE_CAP_CAP_INT(cshrinkimm)	
+//TRANSLATE_CAP_CAP_INT(cshrinkimm)	
 
 // Three operand (int cap cap)
 TRANSLATE_INT_CAP_CAP(csub)
@@ -244,6 +244,11 @@ static inline bool gen_cheri_cap_cap_imm(int cd, int cs1, target_long imm,
 static bool trans_cincoffsetimm(DisasContext *ctx, arg_cincoffsetimm *a)
 {
     return gen_cheri_cap_cap_imm(a->rd, a->rs1, a->imm, &gen_helper_cincoffset);
+}
+
+static bool trans_cshrinkimm(DisasContext *ctx, arg_cincoffsetimm *a)
+{
+   return gen_cheri_cap_cap_imm(a->rd, a->rs1, a->imm, &gen_helper_cshrinkimm);
 }
 
 static bool trans_csetboundsimm(DisasContext *ctx, arg_cincoffsetimm *a)
