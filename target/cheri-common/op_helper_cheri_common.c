@@ -107,6 +107,7 @@ static inline bool check_uninit(CPUArchState *env, uint32_t cs, target_ulong rt)
 
 static inline void handle_shrink_cap(CPUArchState *env, uint32_t cd, uint32_t cb, target_ulong new_base)
 {
+	GET_HOST_RETPC();
         const cap_register_t *cbp = get_readonly_capreg(env, cb);
         target_ulong old_top = (target_ulong)cap_get_top(cbp);
         target_ulong old_base = (target_ulong)cap_get_base(cbp);
