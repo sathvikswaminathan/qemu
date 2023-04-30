@@ -279,6 +279,10 @@ typedef void QEMU_NORETURN (*unaligned_memaccess_handler)(CPUArchState *env,
  * and dead required_perms checks were still being performed every time.
  * Adding QEMU_ALWAYS_INLINE seed up the boot from ~288s to ~278s.
  */
+
+/*
+* return cap_check_common(CAP_PERM_LOAD, env, cb, offset, size, GETPC());
+*/
 static inline QEMU_ALWAYS_INLINE target_ulong
 cap_check_common_reg(uint32_t required_perms, CPUArchState *env, uint32_t cb,
                      target_ulong offset, uint32_t size,

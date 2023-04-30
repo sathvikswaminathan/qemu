@@ -181,6 +181,7 @@ TRANSLATE_CAP_CAP(ccleartag)
 TRANSLATE_CAP_CAP(cmove)
 TRANSLATE_CAP_CAP(csealentry)
 TRANSLATE_CAP_CAP(cuninit)
+TRANSLATE_CAP_CAP(cdropuninit)
 
 // Three operand (cap cap cap)
 TRANSLATE_CAP_CAP_CAP(cbuildcap)
@@ -352,11 +353,38 @@ static inline bool gen_cap_load_mem_idx(DisasContext *ctx, int32_t rd,
     return true;
 }
 
+static inline bool gen_cap_ustore_mem_idx(DisasContext *ctx, int32_t
+addr_regnum,
+int32_t val_regnum1, int32_t
+val_regnum2,
+int mem_idx, MemOp op)
+{
+// Check if the address is valid
+TCGv_cap_checked_ptr vaddr = tcg_temp_new_cap_checked();
+generate_cap_ustore_check_imm(vaddr, addr_regnum, val_regnum2, op);
+// Perform the actual store using TCG ops
+TCGv value = tcg_temp_new();
+gen_get_gpr(value, val_regnum_1);
+tcg_gen_qemu_st_tl_with_checked_addr(value, vaddr, mem_idx, op);
+tcg_temp_free(value);
+tcg_temp_free_cap_checked(vaddr);
+return true;
+}
+
+
 static inline bool gen_cap_load(DisasContext *ctx, int32_t rd, int32_t cs,
     target_long offset, MemOp op)
 {
     return gen_cap_load_mem_idx(ctx, rd, cs, offset, ctx->mem_idx, op);
 }
+
+static inline bool gen_cap_ustore(DisasContext *ctx, int32_t addr_regnum,
+int32_t val_regnum1, int32_t val_regnum2, MemOp op)
+{
+gen_cap_ustore_mem_idx(ctx, addr_regnum, val_regnum1, val_regnum2, ctx->mem_idx, op);
+return true;
+}
+
 
 #define TRANSLATE_EXPLICIT_LOAD(name, op)                                      \
     static bool trans_##name##_ddc(DisasContext *ctx, arg_##name##_ddc *a)     \
@@ -445,6 +473,8 @@ static inline bool gen_cap_store(DisasContext *ctx, int32_t addr_regnum,
     return true;
 }
 
+
+
 #define TRANSLATE_EXPLICIT_STORE(name, op)                                     \
     static bool trans_##name##_ddc(DisasContext *ctx, arg_##name##_ddc *a)     \
     {                                                                          \
@@ -461,6 +491,35 @@ TRANSLATE_EXPLICIT_STORE(st_w, MO_UL)
 #ifdef TARGET_RISCV64
 TRANSLATE_EXPLICIT_STORE(st_d, MO_Q)
 #endif
+
+
+static inline bool gen_cheri_ucap_cap_imm(DisasContext *ctx, int cd1, int
+cn,
+int cd2,
+cheri_cap_cap_imm_helper *gen_func)
+{
+// cd1 gets stored at cn.cursor - cap_size
+TCGv_i32 dest_regnum = tcg_const_i32(cd1);
+// modified cap gets stored in cd2
+TCGv_i32 dest_capnum = tcg_const_i32(cd2);
+TCGv_i32 source_regnum = tcg_const_i32(cn);
+disas_capreg_state_set_unknown(ctx, cd1);
+disas_capreg_state_set_unknown(ctx, cd2);
+disas_capreg_state_set_unknown(ctx, cn);
+
+gen_func(cpu_env, dest_regnum, source_regnum, dest_capnum);
+tcg_temp_free(dest_capnum);
+tcg_temp_free_i32(source_regnum);
+tcg_temp_free_i32(dest_regnum);
+return true;
+}
+
+
+static inline bool trans_usc(DisasContext *ctx, arg_usc *a)
+{
+return gen_cheri_ucap_cap_imm(a->rs2, a->rs1, a->rd,
+&gen_helper_store_cap_via_ucap);
+}
 
 // RS2 is the value, RS1 is the capability/ddc offset
 static inline bool trans_st_c_ddc(DisasContext *ctx, arg_st_c_ddc *a)

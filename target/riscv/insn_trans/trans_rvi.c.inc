@@ -198,6 +198,16 @@ static bool gen_store(DisasContext *ctx, arg_sb *a, MemOp memop)
 }
 
 
+static bool gen_ustore(DisasContext *ctx, arg_usb *a, MemOp memop)
+{
+#ifdef TARGET_CHERI
+if (ctx->capmode) {
+return gen_cap_ustore(ctx, a->rs, a->rs2, a->rd, memop);
+}
+#endif
+return true;
+}
+
 static bool trans_sb(DisasContext *ctx, arg_sb *a)
 {
     return gen_store(ctx, a, MO_SB);
@@ -230,27 +240,29 @@ static bool trans_sd(DisasContext *ctx, arg_sd *a)
 }
 #endif
 
+static bool trans_usb(DisasContext *ctx, arg_usb *a)
+{
+return gen_ustore(ctx, a, MO_SB);
+}
+
+static bool trans_ush(DisasContext *ctx, arg_ush *a)
+{
+return gen_ustore(ctx, a, MO_TESW);
+}
+
+static bool trans_usw(DisasContext *ctx, arg_usw *a)
+{
+return gen_ustore(ctx, a, MO_TESL);
+}
+
 #ifdef TARGET_RISCV64
-static bool trans_usb(DisasContext *ctx, arg_sb *a)
+static bool trans_usd(DisasContext *ctx, arg_usd *a)
 {
-    return gen_store(ctx, a, MO_SB);
-}
-
-static bool trans_ush(DisasContext *ctx, arg_sh *a)
-{
-    return gen_store(ctx, a, MO_TESW);
-}
-
-static bool trans_usw(DisasContext *ctx, arg_sw *a)
-{
-    return gen_store(ctx, a, MO_TESL);
-}
-
-static bool trans_usd(DisasContext *ctx, arg_sd *a)
-{
-    return gen_store(ctx, a, MO_TEQ);
+return gen_ustore(ctx, a, MO_TEQ);
 }
 #endif
+
+
 
 static bool trans_addi(DisasContext *ctx, arg_addi *a)
 {

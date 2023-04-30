@@ -75,6 +75,7 @@ DEF_HELPER_3(cchecktype, void, env, i32, i32)
 DEF_HELPER_3(csealentry, void, env, i32, i32)
 DEF_HELPER_3(cinvoke, void, env, i32, i32)
 DEF_HELPER_3(cuninit, void, env, i32, i32)
+DEF_HELPER_3(cdropuninit, void, env, i32, i32)
 
 // Two operands (cap int)
 DEF_HELPER_3(ccheckperm, void, env, i32, tl)

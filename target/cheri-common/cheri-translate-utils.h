@@ -450,6 +450,19 @@ static inline void gen_special_interposed_st_i32(
     tcg_gen_qemu_st_i32_with_checked_addr(value, checked_addr, arg, op);
 }
 
+static inline void generate_cap_ustore_check_imm(TCGv_cap_checked_ptr
+resultaddr, uint32_t capreg1, uint32_t capreg2, MemOp op)
+{
+TCGv_i32 tcs1 = tcg_const_i32(capreg_1);
+TCGv_i32 tcs2 = tcg_const_i32(capreg_2);
+TCGv_i32 tsize = tcg_const_i32(memop_size(op));
+gen_helper_cap_ustore_check(resultaddr, cpu_env, tcs1, tcs2, tsize);
+tcg_temp_free_i32(tsize);
+tcg_temp_free_i32(tcs1);
+tcg_temp_free_i32(tcs2);
+}
+
+
 static inline void gen_ddc_interposed_ld_i64(DisasContext *ctx, TCGv_i64 result,
                                              TCGv_cap_checked_ptr checked_addr,
                                              TCGv ddc_offset, TCGArg arg,
