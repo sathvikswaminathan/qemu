@@ -93,6 +93,7 @@ DEF_HELPER_4(ccopytype, void, env, i32, i32, i32)
 DEF_HELPER_4(ccseal, void, env, i32, i32, i32)
 DEF_HELPER_4(cseal, void, env, i32, i32, i32)
 DEF_HELPER_4(cunseal, void, env, i32, i32, i32)
+DEF_HELPER_4(store_cap_via_ucap, void, env, i32, i32, i32)
 
 // Three operands (cap cap int)
 DEF_HELPER_4(candaddr, void, env, i32, i32, tl)

@@ -354,21 +354,19 @@ static inline bool gen_cap_load_mem_idx(DisasContext *ctx, int32_t rd,
 }
 
 static inline bool gen_cap_ustore_mem_idx(DisasContext *ctx, int32_t
-addr_regnum,
-int32_t val_regnum1, int32_t
-val_regnum2,
-int mem_idx, MemOp op)
+addr_regnum, int32_t val_regnum_1, int32_t val_regnum_2, int mem_idx, MemOp op)
 {
-// Check if the address is valid
-TCGv_cap_checked_ptr vaddr = tcg_temp_new_cap_checked();
-generate_cap_ustore_check_imm(vaddr, addr_regnum, val_regnum2, op);
-// Perform the actual store using TCG ops
-TCGv value = tcg_temp_new();
-gen_get_gpr(value, val_regnum_1);
-tcg_gen_qemu_st_tl_with_checked_addr(value, vaddr, mem_idx, op);
-tcg_temp_free(value);
-tcg_temp_free_cap_checked(vaddr);
-return true;
+    // Check if the address is valid
+    TCGv_cap_checked_ptr vaddr = tcg_temp_new_cap_checked();
+    generate_cap_ustore_check_imm(vaddr, addr_regnum, val_regnum_2, op);
+
+    // Perform the actual store using TCG ops
+    TCGv value = tcg_temp_new();
+    gen_get_gpr(value, val_regnum_1);
+    tcg_gen_qemu_st_tl_with_checked_addr(value, vaddr, mem_idx, op);
+    tcg_temp_free(value);
+    tcg_temp_free_cap_checked(vaddr);
+    return true;
 }
 
 
@@ -515,7 +513,7 @@ return true;
 }
 
 
-static inline bool trans_usc(DisasContext *ctx, arg_usc *a)
+static inline bool trans_usc(DisasContext *ctx, arg_us *a)
 {
 return gen_cheri_ucap_cap_imm(a->rs2, a->rs1, a->rd,
 &gen_helper_store_cap_via_ucap);

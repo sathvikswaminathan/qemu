@@ -451,7 +451,7 @@ static inline void gen_special_interposed_st_i32(
 }
 
 static inline void generate_cap_ustore_check_imm(TCGv_cap_checked_ptr
-resultaddr, uint32_t capreg1, uint32_t capreg2, MemOp op)
+resultaddr, uint32_t capreg_1, uint32_t capreg_2, MemOp op)
 {
 TCGv_i32 tcs1 = tcg_const_i32(capreg_1);
 TCGv_i32 tcs2 = tcg_const_i32(capreg_2);
