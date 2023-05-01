@@ -504,7 +504,7 @@ cn, int cd2, cheri_cap_cap_imm_helper *gen_func)
     disas_capreg_state_set_unknown(ctx, cn);
 
     gen_func(cpu_env, dest_regnum, source_regnum, dest_capnum);
-    tcg_temp_free(dest_capnum);
+    tcg_temp_free_i32(dest_capnum);
     tcg_temp_free_i32(source_regnum);
     tcg_temp_free_i32(dest_regnum);
     return true;
