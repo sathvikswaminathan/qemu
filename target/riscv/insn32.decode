@@ -42,6 +42,7 @@
 &r    rd rs1 rs2
 &s    imm rs1 rs2
 &u    imm rd
+&us   rd rs1 rs2
 &shift     shamt rs1 rd
 &atomic    aq rl rs2 rs1 rd
 &rmrr      vm rd rs1 rs2
