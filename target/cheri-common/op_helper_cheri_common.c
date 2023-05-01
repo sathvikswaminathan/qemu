@@ -314,8 +314,7 @@ cd))
 }
 #endif
 
-void CHERI_HELPER_IMPL(store_cap_via_ucap(CPUArchState *env, uint32_t cs,
-uint32_t cb, uint32_t cd))
+void CHERI_HELPER_IMPL(store_cap_via_ucap(CPUArchState *env, uint32_t cs, uint32_t cb, uint32_t cd))
 {
     /* check if cb is uninit or not */
     if (check_uninit(env, cb, new_addr)) {

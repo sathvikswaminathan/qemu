@@ -492,13 +492,15 @@ TRANSLATE_EXPLICIT_STORE(st_d, MO_Q)
 
 
 static inline bool gen_cheri_ucap_cap_imm(DisasContext *ctx, int cd1, int
-cn, int cd2, cheri_cap_cap_imm_helper *gen_func)
+cn, int cd2, cheri_cap_cap_cap_helper *gen_func)
 {
     // cd1 gets stored at cn.cursor - cap_size
     TCGv_i32 dest_regnum = tcg_const_i32(cd1);
+
     // modified cap gets stored in cd2
     TCGv_i32 dest_capnum = tcg_const_i32(cd2);
     TCGv_i32 source_regnum = tcg_const_i32(cn);
+
     disas_capreg_state_set_unknown(ctx, cd1);
     disas_capreg_state_set_unknown(ctx, cd2);
     disas_capreg_state_set_unknown(ctx, cn);
