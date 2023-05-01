@@ -198,7 +198,7 @@ static bool gen_store(DisasContext *ctx, arg_sb *a, MemOp memop)
 }
 
 
-static bool gen_ustore(DisasContext *ctx, arg_usb *a, MemOp memop)
+static bool gen_ustore(DisasContext *ctx, arg_us *a, MemOp memop)
 {
 #ifdef TARGET_CHERI
 if (ctx->capmode) {
