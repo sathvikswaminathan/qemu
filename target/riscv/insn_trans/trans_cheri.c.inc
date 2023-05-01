@@ -492,30 +492,28 @@ TRANSLATE_EXPLICIT_STORE(st_d, MO_Q)
 
 
 static inline bool gen_cheri_ucap_cap_imm(DisasContext *ctx, int cd1, int
-cn,
-int cd2,
-cheri_cap_cap_imm_helper *gen_func)
+cn, int cd2, cheri_cap_cap_imm_helper *gen_func)
 {
-// cd1 gets stored at cn.cursor - cap_size
-TCGv_i32 dest_regnum = tcg_const_i32(cd1);
-// modified cap gets stored in cd2
-TCGv_i32 dest_capnum = tcg_const_i32(cd2);
-TCGv_i32 source_regnum = tcg_const_i32(cn);
-disas_capreg_state_set_unknown(ctx, cd1);
-disas_capreg_state_set_unknown(ctx, cd2);
-disas_capreg_state_set_unknown(ctx, cn);
+    // cd1 gets stored at cn.cursor - cap_size
+    TCGv_i32 dest_regnum = tcg_const_i32(cd1);
+    // modified cap gets stored in cd2
+    TCGv_i32 dest_capnum = tcg_const_i32(cd2);
+    TCGv_i32 source_regnum = tcg_const_i32(cn);
+    disas_capreg_state_set_unknown(ctx, cd1);
+    disas_capreg_state_set_unknown(ctx, cd2);
+    disas_capreg_state_set_unknown(ctx, cn);
 
-gen_func(cpu_env, dest_regnum, source_regnum, dest_capnum);
-tcg_temp_free(dest_capnum);
-tcg_temp_free_i32(source_regnum);
-tcg_temp_free_i32(dest_regnum);
-return true;
+    gen_func(cpu_env, dest_regnum, source_regnum, dest_capnum);
+    tcg_temp_free(dest_capnum);
+    tcg_temp_free_i32(source_regnum);
+    tcg_temp_free_i32(dest_regnum);
+    return true;
 }
 
 
 static inline bool trans_usc(DisasContext *ctx, arg_us *a)
 {
-return gen_cheri_ucap_cap_imm(a->rs2, a->rs1, a->rd,
+return gen_cheri_ucap_cap_imm(ctx, a->rs2, a->rs1, a->rd,
 &gen_helper_store_cap_via_ucap);
 }
 
