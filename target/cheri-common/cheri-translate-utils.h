@@ -457,7 +457,7 @@ resultaddr, uint32_t capreg_1, uint32_t capreg_2, MemOp op)
     TCGv_i32 tcs2 = tcg_const_i32(capreg_2);
     TCGv_i32 tsize = tcg_const_i32(memop_size(op));
     
-    gen_helper_cap_ustore_check(cpu_env, tcs1, resultaddr, tcs2, tsize);
+    gen_helper_cap_ustore_check(resultaddr, cpu_env, tcs1, (TCGv_i32)resultaddr, tcs2, tsize);
 
     tcg_temp_free_i32(tsize);
     tcg_temp_free_i32(tcs1);
