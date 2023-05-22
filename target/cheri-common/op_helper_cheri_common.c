@@ -299,7 +299,8 @@ cd))
 }
 #endif
 
-void CHERI_HELPER_IMPL(store_cap_via_ucap(CPUArchState *env, uint32_t cs, uint32_t cb, uint32_t cd))
+void CHERI_HELPER_IMPL(store_cap_via_ucap(CPUArchState *env, uint32_t cs, 
+uint32_t cb, uint32_t cd))
 {
     GET_HOST_RETPC();
     target_ulong new_addr = cap_get_cursor(cbp) - CHERI_CAP_SIZE;

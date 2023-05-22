@@ -240,23 +240,23 @@ static bool trans_sd(DisasContext *ctx, arg_sd *a)
 }
 #endif
 
-static bool trans_usb(DisasContext *ctx, arg_us *a)
+static bool trans_usb(DisasContext *ctx, arg_usb *a)
 {
 return gen_ustore(ctx, a, MO_SB);
 }
 
-static bool trans_ush(DisasContext *ctx, arg_us *a)
+static bool trans_ush(DisasContext *ctx, arg_ush *a)
 {
 return gen_ustore(ctx, a, MO_TESW);
 }
 
-static bool trans_usw(DisasContext *ctx, arg_us *a)
+static bool trans_usw(DisasContext *ctx, arg_usw *a)
 {
 return gen_ustore(ctx, a, MO_TESL);
 }
 
 #ifdef TARGET_RISCV64
-static bool trans_usd(DisasContext *ctx, arg_us *a)
+static bool trans_usd(DisasContext *ctx, arg_usd *a)
 {
 return gen_ustore(ctx, a, MO_TEQ);
 }
