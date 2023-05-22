@@ -317,7 +317,7 @@ uint32_t cb, uint32_t cd))
                         CHERI_CAP_SIZE, raise_unaligned_store_exception);
 
         /* store updated capability in cd */
-        try_set_cap_cursor(env, cbp, cb, cd, new_addr, retpc, oob_info);
+        try_set_cap_cursor(env, cbp, cb, cd, new_addr, GETPC(), OOB_INFO(store_cap_via_ucap));
         /* store cap to addr */
         store_cap_to_memory(env, cs, addr, _host_return_address);
     }
@@ -1327,7 +1327,7 @@ cb, uint32_t cd, uint32_t size))
         target_ulong cursor = cap_get_cursor(cbp);
         cursor = cursor - size;
         /* store updated capability in cd */
-        try_set_cap_cursor(env, cbp, cb, cd, cursor, retpc, OOB_INFO(cap_ustore_check));
+        try_set_cap_cursor(env, cbp, cb, cd, cursor, GETPC(), OOB_INFO(cap_ustore_check));
         return cap_check_common(CAP_PERM_STORE, env, cb, 0, size, GETPC());
     }
 }
