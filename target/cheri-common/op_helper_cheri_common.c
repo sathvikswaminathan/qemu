@@ -313,7 +313,7 @@ uint32_t cb, uint32_t cd))
     else {        
         const target_ulong addr = 
                         cap_check_common_reg(perms_for_store(env, cs), env, 
-                        cb, offset, CHERI_CAP_SIZE, _host_return_address, cbp, 
+                        cb, 0, CHERI_CAP_SIZE, _host_return_address, cbp, 
                         CHERI_CAP_SIZE, raise_unaligned_store_exception);
 
         /* store updated capability in cd */
@@ -1315,8 +1315,8 @@ target_ulong CHERI_HELPER_IMPL(cap_store_check(CPUArchState *env, uint32_t cb,
     return cap_check_common(CAP_PERM_STORE, env, cb, offset, size, GETPC());
 }
 
-target_ulong CHERI_HELPER_IMPL(cap_ustore_check(target_ulong new_addr, CPUArchState *env, uint32_t
-cb, uint32_t cd, uint32_t size))
+target_ulong CHERI_HELPER_IMPL(cap_ustore_check(CPUArchState *env, uint32_t cb, 
+                                target_ulong new_addr, uint32_t cd, uint32_t size))
 {
     GET_HOST_RETPC();
     /* check if cb is uninit or not */

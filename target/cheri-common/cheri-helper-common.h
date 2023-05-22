@@ -137,7 +137,7 @@ DEF_HELPER_4(cap_store_check, cap_checked_ptr, env, i32, tl, i32)
 DEF_HELPER_4(cap_rmw_check, cap_checked_ptr, env, i32, tl, i32)
 DEF_HELPER_4(load_cap_via_cap, void, env, i32, i32, tl)
 DEF_HELPER_4(store_cap_via_cap, void, env, i32, i32, tl)
-DEF_HELPER_4(cap_ustore_check, cap_checked_ptr, env, i32, i32, i32)
+DEF_HELPER_5(cap_ustore_check, void, env, i32, tl, i32, i32)
 
 // Misc
 DEF_HELPER_2(decompress_cap, void, env, i32)
