@@ -513,7 +513,7 @@ cn, int cd2, cheri_cap_cap_cap_helper *gen_func)
 }
 
 
-static inline bool trans_usc(DisasContext *ctx, arg_us *a)
+static inline bool trans_usc(DisasContext *ctx, arg_usc *a)
 {
 return gen_cheri_ucap_cap_imm(ctx, a->rs2, a->rs1, a->rd,
 &gen_helper_store_cap_via_ucap);

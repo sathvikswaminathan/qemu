@@ -303,15 +303,14 @@ void CHERI_HELPER_IMPL(store_cap_via_ucap(CPUArchState *env, uint32_t cs,
 uint32_t cb, uint32_t cd))
 {
     GET_HOST_RETPC();
+    const cap_register_t *cbp = get_load_store_base_cap(env, cb);
     target_ulong new_addr = cap_get_cursor(cbp) - CHERI_CAP_SIZE;
 
     /* check if cb is uninit or not */
     if (check_uninit(env, cb, new_addr)) {
         raise_cheri_exception(env, CapEx_UninitViolation, cd);
     }
-    else {
-        const cap_register_t *cbp = get_load_store_base_cap(env, cb);
-        
+    else {        
         const target_ulong addr = 
                         cap_check_common_reg(perms_for_store(env, cs), env, 
                         cb, offset, CHERI_CAP_SIZE, _host_return_address, cbp, 
@@ -1299,10 +1298,12 @@ target_ulong CHERI_HELPER_IMPL(cap_load_check(CPUArchState *env, uint32_t cb,
                                             target_ulong offset, uint32_t size))
 
 {
-if(cap_is_uninit(env, cb) && offset < 0) {
-raise_cheri_exception(env, CapEx_UninitLoadViolation, cb);
-}
-return cap_check_common(CAP_PERM_LOAD, env, cb, offset, size, GETPC());
+    GET_HOST_RETPC();
+    
+    if(cap_is_uninit(env, cb) && offset < 0) {
+        raise_cheri_exception(env, CapEx_UninitLoadViolation, cb);
+    }
+    return cap_check_common(CAP_PERM_LOAD, env, cb, offset, size, GETPC());
 }
 
 /*
