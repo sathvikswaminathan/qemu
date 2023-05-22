@@ -1299,7 +1299,7 @@ target_ulong CHERI_HELPER_IMPL(cap_load_check(CPUArchState *env, uint32_t cb,
 
 {
     GET_HOST_RETPC();
-    
+
     if(cap_is_uninit(env, cb) && offset < 0) {
         raise_cheri_exception(env, CapEx_UninitLoadViolation, cb);
     }
@@ -1327,7 +1327,7 @@ cb, uint32_t cd, uint32_t size))
         target_ulong cursor = cap_get_cursor(cbp);
         cursor = cursor - size;
         /* store updated capability in cd */
-        try_set_cap_cursor(env, cbp, cb, cd, cursor, retpc, oob_info);
+        try_set_cap_cursor(env, cbp, cb, cd, cursor, retpc, OOB_INFO(cap_ustore_check));
         return cap_check_common(CAP_PERM_STORE, env, cb, 0, size, GETPC());
     }
 }
